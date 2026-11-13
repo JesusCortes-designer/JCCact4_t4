@@ -13,7 +13,7 @@ API en el VPS: http://20.119.81.138:8087
 
 ## Estructura
 
-````
+```
 com.example.demoCrud
 ├── models/       Usuario, Autor, Libro
 ├── repository/   repositorios JPA
@@ -23,7 +23,7 @@ com.example.demoCrud
 ├── dto/          objetos de entrada y salida
 └── exception/    manejo de errores
 bruno/            colección de Bruno
-````
+```
 
 ## Cómo funciona la seguridad
 
@@ -34,40 +34,44 @@ bruno/            colección de Bruno
 
 ## Endpoints
 
-| Método | Ruta | Requiere token | Descripción |
-|--------|------|----------------|-------------|
-| POST | /api/auth/register | No | Registrar usuario (201) |
-| POST | /api/auth/login | No | Iniciar sesión y recibir el token (200) |
-| GET | /api/libros?page=0&size=10 | Sí | Listar libros con paginación (200) |
-| GET | /api/libros/{id} | Sí | Ver un libro (200, 404) |
-| POST | /api/libros | Sí | Crear libro (201, 400) |
-| PUT | /api/libros/{id} | Sí | Actualizar libro (200, 400, 404) |
-| DELETE | /api/libros/{id} | Sí | Eliminar libro (204, 404) |
-| GET, POST, PUT, DELETE | /api/autores | Sí | Mismo CRUD para autores |
+| Método | Link completo | Requiere token | Descripción |
+|--------|---------------|----------------|-------------|
+| POST | http://20.119.81.138:8087/api/auth/register | No | Registrar usuario (201) |
+| POST | http://20.119.81.138:8087/api/auth/login | No | Iniciar sesión y recibir el token (200) |
+| GET | http://20.119.81.138:8087/api/libros?page=0&size=10 | Sí | Listar libros con paginación (200) |
+| GET | http://20.119.81.138:8087/api/libros/{id} | Sí | Ver un libro (200, 404) |
+| POST | http://20.119.81.138:8087/api/libros | Sí | Crear libro (201, 400) |
+| PUT | http://20.119.81.138:8087/api/libros/{id} | Sí | Actualizar libro (200, 400, 404) |
+| DELETE | http://20.119.81.138:8087/api/libros/{id} | Sí | Eliminar libro (204, 404) |
+| GET | http://20.119.81.138:8087/api/autores | Sí | Listar autores (200) |
+| GET | http://20.119.81.138:8087/api/autores/{id} | Sí | Ver un autor (200, 404) |
+| POST | http://20.119.81.138:8087/api/autores | Sí | Crear autor (201, 400) |
+| PUT | http://20.119.81.138:8087/api/autores/{id} | Sí | Actualizar autor (200, 400, 404) |
+| DELETE | http://20.119.81.138:8087/api/autores/{id} | Sí | Eliminar autor (204, 404, 409) |
 
 Códigos usados: 200, 201, 204, 400 (validación fallida), 401 (sin token o token inválido), 404, 409 (duplicado o autor con libros).
 
 Ejemplo de registro:
 
-````json
+```json
 { "username": "jesus", "email": "jesus@correo.com", "password": "123456" }
-````
+```
 
 Respuesta (nunca incluye la contraseña):
 
-````json
+```json
 { "id": 1, "username": "jesus", "email": "jesus@correo.com" }
-````
+```
 
 Ejemplo de error de validación (400):
 
-````json
+```json
 {
   "status": 400,
   "error": "Validación fallida",
   "errores": { "titulo": "El título es obligatorio" }
 }
-````
+```
 
 ## Configuración
 
@@ -88,10 +92,10 @@ Está en la carpeta bruno. Para usarla: abrir Bruno, Open Collection, elegir la 
 
 ## Despliegue en el VPS
 
-````
+```
 mvn clean package -DskipTests
 scp target/act4-0.0.1-SNAPSHOT.jar azureuser@20.119.81.138:~/act4/
-````
+```
 
 En el VPS se crea la base de datos act4_db, un usuario de MySQL y un servicio systemd que ejecuta el jar en el puerto 8087. Los pasos completos están en instrucciones_vps_act4.txt.
 
