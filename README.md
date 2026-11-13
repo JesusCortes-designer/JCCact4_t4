@@ -2,7 +2,7 @@
 
 API REST con Spring Boot, Spring Security y JWT. Maneja libros y autores (un autor tiene muchos libros) y solo responde JSON. Las pruebas están en una colección de Bruno incluida en la carpeta bruno.
 
-API en el VPS: http://20.119.81.138:8086
+API en el VPS: http://20.119.81.138:8087
 
 ## Tecnologías
 
@@ -13,7 +13,7 @@ API en el VPS: http://20.119.81.138:8086
 
 ## Estructura
 
-```
+````
 com.example.demoCrud
 ├── models/       Usuario, Autor, Libro
 ├── repository/   repositorios JPA
@@ -23,7 +23,7 @@ com.example.demoCrud
 ├── dto/          objetos de entrada y salida
 └── exception/    manejo de errores
 bruno/            colección de Bruno
-```
+````
 
 ## Cómo funciona la seguridad
 
@@ -49,25 +49,25 @@ Códigos usados: 200, 201, 204, 400 (validación fallida), 401 (sin token o toke
 
 Ejemplo de registro:
 
-```json
+````json
 { "username": "jesus", "email": "jesus@correo.com", "password": "123456" }
-```
+````
 
 Respuesta (nunca incluye la contraseña):
 
-```json
+````json
 { "id": 1, "username": "jesus", "email": "jesus@correo.com" }
-```
+````
 
 Ejemplo de error de validación (400):
 
-```json
+````json
 {
   "status": 400,
   "error": "Validación fallida",
   "errores": { "titulo": "El título es obligatorio" }
 }
-```
+````
 
 ## Configuración
 
@@ -75,7 +75,7 @@ Se define con variables de entorno.
 
 | Variable | Descripción |
 |----------|-------------|
-| SERVER_PORT | Puerto de la API (8086 en el VPS) |
+| SERVER_PORT | Puerto de la API (8087 en el VPS) |
 | DB_URL | URL de la base de datos (opcional) |
 | DB_USER | Usuario de la base de datos |
 | DB_PASS | Contraseña de la base de datos |
@@ -88,43 +88,43 @@ Está en la carpeta bruno. Para usarla: abrir Bruno, Open Collection, elegir la 
 
 ## Despliegue en el VPS
 
-```
+````
 mvn clean package -DskipTests
 scp target/act4-0.0.1-SNAPSHOT.jar azureuser@20.119.81.138:~/act4/
-```
+````
 
-En el VPS se crea la base de datos act4_db, un usuario de MySQL y un servicio systemd que ejecuta el jar en el puerto 8086. Los pasos completos están en instrucciones_vps_act4.txt.
+En el VPS se crea la base de datos act4_db, un usuario de MySQL y un servicio systemd que ejecuta el jar en el puerto 8087. Los pasos completos están en instrucciones_vps_act4.txt.
 
 ## Capturas de pantalla
 
 Registro:
 
-![Registro](docs/capturas/01-registro.png)
+![Registro](imagenes/image1.png)
 
 Login con token:
 
-![Login](docs/capturas/02-login.png)
+![Login](imagenes/image2.png)
 
 Crear:
 
-![Crear](docs/capturas/03-crear.png)
+![Crear](imagenes/image3.png)
 
 Listar con paginación:
 
-![Listar](docs/capturas/04-listar.png)
+![Listar](imagenes/image4.png)
 
 Actualizar:
 
-![Actualizar](docs/capturas/05-actualizar.png)
+![Actualizar](imagenes/image5.png)
 
 Eliminar:
 
-![Eliminar](docs/capturas/06-eliminar.png)
+![Eliminar](imagenes/image6.png)
 
 Petición sin token rechazada con 401:
 
-![Sin token](docs/capturas/07-sin-token-401.png)
+![Sin token](imagenes/image7.png)
 
 Validación fallida con 400:
 
-![Validación](docs/capturas/08-validacion-400.png)
+![Validación](imagenes/image8.png)
