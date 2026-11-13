@@ -1,0 +1,23 @@
+meta {
+  name: Crear libro con datos invalidos (400)
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/libros
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "titulo": "",
+    "anioPublicacion": -5
+  }
+}
+

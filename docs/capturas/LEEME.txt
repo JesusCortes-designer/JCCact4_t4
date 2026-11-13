@@ -1,0 +1,10 @@
+Guarda aqui las capturas de Bruno con estos nombres:
+
+01-registro.png
+02-login.png            (se ve el token)
+03-crear.png
+04-listar.png           (paginacion)
+05-actualizar.png
+06-eliminar.png
+07-sin-token-401.png
+08-validacion-400.png

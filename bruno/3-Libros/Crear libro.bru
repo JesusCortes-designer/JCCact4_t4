@@ -1,0 +1,24 @@
+meta {
+  name: Crear libro
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/libros
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "titulo": "El principito",
+    "anioPublicacion": 1943,
+    "autorId": 1
+  }
+}
+

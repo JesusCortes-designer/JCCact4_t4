@@ -1,0 +1,19 @@
+meta {
+  name: Login con contrasena incorrecta (401)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "jesus",
+    "password": "incorrecta"
+  }
+}
+

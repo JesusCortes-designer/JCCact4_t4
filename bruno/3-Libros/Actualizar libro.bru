@@ -1,0 +1,24 @@
+meta {
+  name: Actualizar libro
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/libros/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "titulo": "El principito (edición ilustrada)",
+    "anioPublicacion": 1943,
+    "autorId": 1
+  }
+}
+

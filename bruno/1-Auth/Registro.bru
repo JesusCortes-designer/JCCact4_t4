@@ -1,0 +1,20 @@
+meta {
+  name: Registro
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "jesus",
+    "email": "jesus@correo.com",
+    "password": "123456"
+  }
+}
+

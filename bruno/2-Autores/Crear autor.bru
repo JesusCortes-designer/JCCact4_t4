@@ -1,0 +1,23 @@
+meta {
+  name: Crear autor
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/autores
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "nombre": "Antoine de Saint-Exupéry",
+    "nacionalidad": "Francesa"
+  }
+}
+

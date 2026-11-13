@@ -1,0 +1,16 @@
+meta {
+  name: Ver libro inexistente (404)
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/libros/9999
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+

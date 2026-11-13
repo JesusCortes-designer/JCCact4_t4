@@ -1,0 +1,16 @@
+meta {
+  name: Libros con token falso (debe dar 401)
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/libros
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer token.falso.123
+}
+

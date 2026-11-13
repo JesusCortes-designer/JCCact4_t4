@@ -1,0 +1,138 @@
+INSTRUCCIONES DEL PROYECTO JCCact4_t4 EN EL VPS
+================================================
+
+Datos
+- VPS: 20.119.81.138 (usuario azureuser)
+- Carpeta en el VPS: ~/act4 (distinta a las actividades anteriores)
+- Archivo: act4-0.0.1-SNAPSHOT.jar
+- Puerto: 8086 (las actividades anteriores usan otros; el 8085 es de la Act 3)
+- Base de datos: act4_db, usuario: act4
+- Servicio: act4
+
+
+1. PREPARAR EL VPS (solo la primera vez)
+----------------------------------------
+
+Conectarse:
+
+    ssh azureuser@20.119.81.138
+
+Crear la carpeta:
+
+    mkdir -p ~/act4
+
+Crear la base de datos y el usuario:
+
+    sudo mysql
+
+    CREATE DATABASE act4_db;
+    CREATE USER 'act4'@'localhost' IDENTIFIED BY 'TU_PASSWORD';
+    GRANT ALL PRIVILEGES ON act4_db.* TO 'act4'@'localhost';
+    FLUSH PRIVILEGES;
+    EXIT;
+
+Las tablas las crea Hibernate solas al iniciar la app.
+
+
+2. COMPILAR Y SUBIR EL JAR (desde mi PC, PowerShell)
+----------------------------------------------------
+
+    cd C:\xampp\htdocs\JCCact4_t4
+    & "C:\Users\yixux\maven\apache-maven-3.9.9\bin\mvn.cmd" clean package -DskipTests
+    scp target\act4-0.0.1-SNAPSHOT.jar azureuser@20.119.81.138:~/act4/
+
+Si ya existe el servicio, detenerlo antes del scp para evitar errores:
+
+    sudo systemctl stop act4
+
+
+3. CREAR EL SERVICIO (para que siga corriendo al cerrar SSH)
+------------------------------------------------------------
+
+    sudo nano /etc/systemd/system/act4.service
+
+Contenido:
+
+    [Unit]
+    Description=Actividad 4 - API REST con JWT
+    After=network.target mysql.service
+
+    [Service]
+    User=azureuser
+    WorkingDirectory=/home/azureuser/act4
+    ExecStart=/usr/bin/java -jar /home/azureuser/act4/act4-0.0.1-SNAPSHOT.jar
+    Environment=SERVER_PORT=8086
+    Environment=DB_URL=jdbc:mysql://localhost:3306/act4_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    Environment=DB_USER=act4
+    Environment=DB_PASS=TU_PASSWORD
+    Environment=JWT_SECRET=PON_AQUI_UNA_CLAVE_LARGA_DE_AL_MENOS_32_CARACTERES
+    Restart=on-failure
+
+    [Install]
+    WantedBy=multi-user.target
+
+Cambiar TU_PASSWORD por la contraseña del usuario act4 de MySQL y JWT_SECRET
+por una clave propia de al menos 32 caracteres.
+
+Guardar en nano: Ctrl+O, Enter. Salir: Ctrl+X.
+
+Activar y arrancar:
+
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now act4
+    sudo systemctl status act4 --no-pager
+
+Debe decir: active (running)
+
+- enable: arranca solo cuando el VPS se enciende o reinicia.
+- Restart=on-failure: si se cae, vuelve a arrancar.
+- Por eso sigue corriendo aunque cierre SSH o apague mi PC.
+
+
+4. ABRIR EL PUERTO 8086
+-----------------------
+
+En Azure: portal de Azure -> la maquina virtual -> Redes -> agregar regla de
+puerto de entrada: puerto de destino 8086, protocolo TCP, accion Permitir.
+
+En el VPS, solo si ufw esta activo:
+
+    sudo ufw status
+    sudo ufw allow 8086/tcp
+
+
+5. ACTUALIZAR DESPUES DE CAMBIOS
+--------------------------------
+
+    (PC)  mvn clean package -DskipTests
+    (VPS) sudo systemctl stop act4
+    (PC)  scp target\act4-0.0.1-SNAPSHOT.jar azureuser@20.119.81.138:~/act4/
+    (VPS) sudo systemctl start act4
+    (VPS) sudo systemctl status act4 --no-pager
+
+Ver logs:  journalctl -u act4 -f   (salir con Ctrl+C, la app sigue corriendo)
+Solo errores:
+    journalctl -u act4 -n 200 --no-pager | grep -E "ERROR|Caused by|Exception"
+
+
+6. PROBAR
+---------
+
+En Bruno, entorno vps (baseUrl = http://20.119.81.138:8086):
+Registro -> Login -> Crear autor -> Crear libro -> Listar -> Actualizar -> Eliminar
+y la peticion "Libros SIN token", que debe dar 401.
+
+Ver los datos en la base:
+    sudo mysql act4_db -e "SELECT id, username, email FROM usuarios; SELECT * FROM libros;"
+
+
+7. PROBLEMAS COMUNES
+--------------------
+
+- Error 500 al usar la API despues de subir un jar nuevo:
+      sudo systemctl restart act4
+- Access denied for user 'act4': la contraseña del servicio no coincide con la de MySQL.
+- WeakKeyException: JWT_SECRET tiene menos de 32 caracteres.
+- Port 8086 already in use:  sudo ss -tlnp | grep 8086
+- Funciona dentro del VPS pero no desde fuera: revisar la regla de Azure y ufw.
+- Java menor a 21:  sudo apt install openjdk-21-jre-headless -y
